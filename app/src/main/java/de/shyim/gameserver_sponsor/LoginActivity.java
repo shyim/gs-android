@@ -64,6 +64,12 @@ public class LoginActivity extends ApiActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+        if(sharedPreferences.getString("token", "") != "") {
+            Intent myIntent = new Intent(this, MainActivity.class);
+            startActivity(myIntent);
+        }
     }
 
     private void attemptLogin() {
