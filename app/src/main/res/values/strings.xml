@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Gameserver-Sponsor</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Passwort</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="error_invalid_email">Ungültige Email</string>
+    <string name="error_invalid_password">Dein Passwort ist zukurz</string>
+    <string name="error_incorrect_password">Deine Email oder dein Passwort ist falsch</string>
+    <string name="error_field_required">Das Feld wird benötigt</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
