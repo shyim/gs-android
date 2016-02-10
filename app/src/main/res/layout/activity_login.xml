@@ -41,7 +41,7 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:text="shyim@outlook.de"
+                    android:text=""
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>

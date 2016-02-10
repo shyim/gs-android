@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,9 +30,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-
-import de.shyim.gameserver_sponsor.Model.Gameserver;
 
 public class MainActivity extends ApiActivity
         implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener {
