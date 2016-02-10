@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import de.shyim.gameserver_sponsor.Model.Gameserver;
 
@@ -36,7 +38,7 @@ public class MainActivity extends ApiActivity
     private ImageView mImageView;
     private Menu mMenu;
     private NavigationView navigationView;
-    private ArrayList<Gameserver> gameservers;
+    private Collection<Gameserver> gameservers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class MainActivity extends ApiActivity
 
         new ApiClient(this, "/index/avatar", sharedPreferences.getString("token", ""), new JSONObject(), "avatar").execute();
         new ApiClient(this, "/server", sharedPreferences.getString("token", ""), new JSONObject(), "server").execute();
+
+        gameservers = new ArrayList<Gameserver>();
     }
 
     @Override
@@ -102,12 +106,23 @@ public class MainActivity extends ApiActivity
                         servers.add(server.getJSONObject(i));
                     }
 
+                    final MainActivity activity = this;
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             for(int i = 0; i < servers.size(); i++) {
                                 try {
                                     MenuItem item = mMenu.getItem(1).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
+                                    final Integer gsID = Integer.valueOf(servers.get(i).getString("id"));
+                                    item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            Toast.makeText(activity, gsID.toString(), Toast.LENGTH_LONG).show();
+                                            return true;
+                                        }
+                                    });
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
