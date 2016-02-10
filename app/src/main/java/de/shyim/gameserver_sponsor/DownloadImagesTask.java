@@ -12,6 +12,9 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -19,8 +22,10 @@ import java.net.URLConnection;
 
 public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
     private ImageView mView;
-    DownloadImagesTask(ImageView view) {
+    private String mAvatarFile;
+    DownloadImagesTask(ImageView view, String avatarFile) {
         mView = view;
+        mAvatarFile = avatarFile;
     }
 
     @Override
@@ -30,7 +35,20 @@ public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap result) {
-        mView.setImageBitmap(getRoundedCornerBitmap(result, 20));
+        result = getRoundedCornerBitmap(result, 100);
+        mView.setImageBitmap(result);
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(mAvatarFile);
+            result.compress(Bitmap.CompressFormat.PNG, 85, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

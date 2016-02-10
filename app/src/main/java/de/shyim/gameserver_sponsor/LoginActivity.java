@@ -109,13 +109,13 @@ public class LoginActivity extends ApiActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ApiClient client = new ApiClient(this, "/", "", login);
+            ApiClient client = new ApiClient(this, "/", "", login, "login");
             client.execute();
         }
     }
 
     @Override
-    public void onApiResponse(JSONObject object) {
+    public void onApiResponse(JSONObject object, String action) {
         final LoginActivity activity = this;
         try {
             if(object.getBoolean("success")) {
@@ -124,7 +124,6 @@ public class LoginActivity extends ApiActivity {
                 editor.putString("token", object.getString("token"));
                 editor.putString("username", object.getString("username"));
                 editor.putString("email", object.getString("email"));
-                editor.putString("avatar", object.getString("avatar"));
                 editor.apply();
                 final String toastMessage = object.getString("message");
 

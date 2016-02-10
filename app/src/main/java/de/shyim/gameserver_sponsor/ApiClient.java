@@ -16,12 +16,14 @@ public class ApiClient extends AsyncTask<Void, Void, Boolean> {
     private String sHost = "https://devv6.gameserver-sponsor.de/api";
     private String sURI = "/";
     private String sToken;
+    private String sAction;
     private ApiActivity activityApiActivity;
     private JSONObject jsonRequest;
 
-    ApiClient(ApiActivity activity, String uri, String token, JSONObject request) {
+    ApiClient(ApiActivity activity, String uri, String token, JSONObject request, String action) {
         sURI = uri;
         sToken = token;
+        sAction = action;
         activityApiActivity = activity;
         jsonRequest = request;
     }
@@ -58,7 +60,7 @@ public class ApiClient extends AsyncTask<Void, Void, Boolean> {
         }
 
         try {
-            activityApiActivity.onApiResponse(new JSONObject(responseOutput.toString()));
+            activityApiActivity.onApiResponse(new JSONObject(responseOutput.toString()), sAction);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -2,8 +2,9 @@ package de.shyim.gameserver_sponsor;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,9 +16,15 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import de.shyim.gameserver_sponsor.util.MD5;
 
 public class MainActivity extends ApiActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -56,10 +63,10 @@ public class MainActivity extends ApiActivity
         mUsername.setText(sharedPreferences.getString("username", ""));
         mEmail.setText(sharedPreferences.getString("email", ""));
 
-        new DownloadImagesTask(mImageView).execute(sharedPreferences.getString("avatar", ""));
         setTitle("Dashboard");
 
-        new ApiClient(this, "/server", sharedPreferences.getString("token", ""), new JSONObject()).execute();
+        new ApiClient(this, "/index/avatar", sharedPreferences.getString("token", ""), new JSONObject(), "avatar").execute();
+        new ApiClient(this, "/server", sharedPreferences.getString("token", ""), new JSONObject(), "server").execute();
     }
 
     @Override
@@ -82,24 +89,59 @@ public class MainActivity extends ApiActivity
     }
 
     @Override
-    public void onApiResponse(JSONObject object) {
-        try {
-            if(object.getBoolean("success")) {
-            } else {
-                /**
-                 * Not loggedin
-                 */
-                SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.clear();
-                editor.commit();
+    public void onApiResponse(JSONObject object, String action) {
+        if (action.equals("server")) {
+            try {
+                if (object.getBoolean("success")) {
 
-                Intent myIntent = new Intent(this, LoginActivity.class);
-                startActivity(myIntent);
+                } else {
+                    /**
+                     * Not loggedin
+                     */
+                    SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.clear();
+                    editor.apply();
+
+                    Intent myIntent = new Intent(this, LoginActivity.class);
+                    startActivity(myIntent);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            System.out.println(object.toString());
+        } else {
+            String md5;
+            String avatarUrl;
+            try {
+                md5 = object.getString("avatarMd5");
+                avatarUrl = object.getString("avatar");
+            } catch (JSONException e) {
+                md5 = null;
+                avatarUrl = null;
+            }
+            File f = new File(getFilesDir() + "/avatar.png");
+            if (f.exists()) {
+                Bitmap bm = null;
+                try {
+                    FileInputStream inputStream = new FileInputStream(f);
+                    bm = BitmapFactory.decodeStream(inputStream);
+                    inputStream.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                final Bitmap bm2 = bm;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mImageView.setImageBitmap(bm2);
+                    }
+                });
+            } else {
+                new DownloadImagesTask(mImageView, getFilesDir() + "/avatar.png").execute(avatarUrl);
+            }
         }
-        System.out.println(object.toString());
     }
 }
