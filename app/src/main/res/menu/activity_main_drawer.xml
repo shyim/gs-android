@@ -6,11 +6,11 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Dashboard" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Meine Server" />
     </group>
+
+    <item android:title="Meine Server" android:checkableBehavior="single">
+        <menu></menu>
+    </item>
 
     <item android:title="Kommunikation">
         <menu>

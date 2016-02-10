@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,8 +24,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
-import de.shyim.gameserver_sponsor.util.MD5;
+import de.shyim.gameserver_sponsor.Model.Gameserver;
 
 public class MainActivity extends ApiActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +36,7 @@ public class MainActivity extends ApiActivity
     private ImageView mImageView;
     private Menu mMenu;
     private NavigationView navigationView;
+    private ArrayList<Gameserver> gameservers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,24 @@ public class MainActivity extends ApiActivity
         if (action.equals("server")) {
             try {
                 if (object.getBoolean("success")) {
+                    final ArrayList<JSONObject> servers = new ArrayList<JSONObject>();
+                    JSONArray server = object.getJSONArray("server");
+                    for (int i = 0; i < server.length(); i++) {
+                        servers.add(server.getJSONObject(i));
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for(int i = 0; i < servers.size(); i++) {
+                                try {
+                                    MenuItem item = mMenu.getItem(1).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
 
                 } else {
                     /**
