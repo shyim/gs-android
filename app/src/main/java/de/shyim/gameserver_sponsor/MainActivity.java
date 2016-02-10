@@ -1,10 +1,15 @@
 package de.shyim.gameserver_sponsor;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -31,14 +36,13 @@ import java.util.Collection;
 import de.shyim.gameserver_sponsor.Model.Gameserver;
 
 public class MainActivity extends ApiActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener {
 
     private TextView mUsername;
     private TextView mEmail;
     private ImageView mImageView;
     private Menu mMenu;
     private NavigationView navigationView;
-    private Collection<Gameserver> gameservers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +73,14 @@ public class MainActivity extends ApiActivity
         mEmail.setText(sharedPreferences.getString("email", ""));
 
         setTitle("Dashboard");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
         new ApiClient(this, "/index/avatar", sharedPreferences.getString("token", ""), new JSONObject(), "avatar").execute();
         new ApiClient(this, "/server", sharedPreferences.getString("token", ""), new JSONObject(), "server").execute();
-
-        gameservers = new ArrayList<Gameserver>();
     }
 
     @Override
@@ -92,6 +99,18 @@ public class MainActivity extends ApiActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         setTitle(item.getTitle());
+        if(item.getTitle().equals("Ausloggen")) {
+            SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.commit();
+            Intent mStartActivity = new Intent(this, LoginActivity.class);
+            int mPendingIntentId = 123456;
+            PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+            System.exit(0);
+        }
         return true;
     }
 
@@ -119,7 +138,19 @@ public class MainActivity extends ApiActivity
 
                                         @Override
                                         public boolean onMenuItemClick(MenuItem item) {
-                                            Toast.makeText(activity, gsID.toString(), Toast.LENGTH_LONG).show();
+                                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                            drawer.closeDrawer(GravityCompat.START);
+                                            setTitle(item.getTitle());
+                                            /**
+                                             * Change Fragment to Server
+                                             */
+                                            ServerFragment newFragment = new ServerFragment();
+                                            Bundle args = new Bundle();
+                                            newFragment.setArguments(args);
+                                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                            transaction.replace(R.id.contentMain, newFragment);
+                                            transaction.addToBackStack(null);
+                                            transaction.commit();
                                             return true;
                                         }
                                     });
@@ -179,5 +210,10 @@ public class MainActivity extends ApiActivity
                 new DownloadImagesTask(mImageView, getFilesDir() + "/avatar.png").execute(avatarUrl);
             }
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
