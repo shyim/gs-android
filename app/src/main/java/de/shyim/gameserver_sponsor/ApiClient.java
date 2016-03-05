@@ -1,8 +1,11 @@
 package de.shyim.gameserver_sponsor;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,7 +16,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class ApiClient extends AsyncTask<Void, Void, Boolean> {
-    private String sHost = "https://devv6.gameserver-sponsor.de/api";
+    private String sHost = "https://gameserver-sponsor.de/api";
     private String sURI = "/";
     private String sToken;
     private String sAction;
@@ -47,19 +50,18 @@ public class ApiClient extends AsyncTask<Void, Void, Boolean> {
             dataOutputStream.close();
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = "";
+            String content;
 
-            while((content = bufferedReader.readLine()) != null) {
+            while ((content = bufferedReader.readLine()) != null) {
                 responseOutput.append(content);
             }
             bufferedReader.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
+            Log.d("Response", responseOutput.toString());
             activityApiActivity.onApiResponse(new JSONObject(responseOutput.toString()), sAction);
         } catch (JSONException e) {
             e.printStackTrace();

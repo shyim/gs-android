@@ -15,8 +15,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Server: offline"
-            android:id="@+id/textView"
+            android:text=""
+            android:id="@+id/serverOnlineStatus"
             android:layout_centerHorizontal="true" />
 
         <Button
@@ -29,7 +29,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:onClick="onStartServer"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -40,7 +41,8 @@
             android:layout_alignLeft="@+id/button"
             android:layout_alignStart="@+id/button"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:onClick="onStopServer"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -51,7 +53,8 @@
             android:layout_alignLeft="@+id/button2"
             android:layout_alignStart="@+id/button2"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:onClick="onRestartServer"/>
 
     </RelativeLayout>
 </FrameLayout>
