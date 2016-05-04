@@ -110,6 +110,17 @@ public class MainActivity extends ApiActivity
             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
             System.exit(0);
         }
+
+        if (item.getTitle().equals("Fehler melden")) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/html");
+            intent.putExtra(Intent.EXTRA_EMAIL, "android@gameserver-sponsor.de");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in App");
+            intent.putExtra(Intent.EXTRA_TEXT, "Message");
+
+            startActivity(Intent.createChooser(intent, "Send Message"));
+        }
+
         return true;
     }
 
