@@ -1,13 +1,14 @@
-package de.shyim.gameserver_sponsor;
+package de.shyim.gameserver_sponsor.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import de.shyim.gameserver_sponsor.R;
 
 public class ServerFragment extends Fragment {
     private Integer gsID;
@@ -68,7 +69,6 @@ public class ServerFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

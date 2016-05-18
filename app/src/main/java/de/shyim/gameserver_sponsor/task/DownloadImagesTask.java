@@ -1,4 +1,4 @@
-package de.shyim.gameserver_sponsor;
+package de.shyim.gameserver_sponsor.task;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,7 +23,7 @@ import java.net.URLConnection;
 public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
     private ImageView mView;
     private String mAvatarFile;
-    DownloadImagesTask(ImageView view, String avatarFile) {
+    public DownloadImagesTask(ImageView view, String avatarFile) {
         mView = view;
         mAvatarFile = avatarFile;
     }

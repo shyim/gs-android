@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
@@ -29,9 +30,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import de.shyim.gameserver_sponsor.fragments.ServerFragment;
+import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
 public class MainActivity extends ApiActivity
         implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener {
@@ -39,7 +42,7 @@ public class MainActivity extends ApiActivity
     private ImageView mImageView;
     private Menu mMenu;
     private NavigationView navigationView;
-    private Integer currentGS;
+    private Integer currentGS = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,27 @@ public class MainActivity extends ApiActivity
         mEmail.setText(sharedPreferences.getString("email", ""));
 
         setTitle("Dashboard");
+
+        final MainActivity mainActivity = this;
+
+        final Handler serverStatusHandler = new Handler();
+        Runnable serverStatusRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mainActivity.currentGS != null) {
+                    JSONObject req = new JSONObject();
+                    try {
+                        req.put("gsID", mainActivity.currentGS);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    new ApiClient(mainActivity, "/server/getSingle", mainActivity.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverStatus").execute();
+                }
+
+                serverStatusHandler.postDelayed(this, 2500);
+            }
+        };
+        serverStatusHandler.postDelayed(serverStatusRunnable, 2500);
     }
 
     @Override
@@ -123,6 +147,10 @@ public class MainActivity extends ApiActivity
             startActivity(Intent.createChooser(intent, "Send Message"));
         }
 
+        if (!item.getTitle().toString().contains(":")) {
+            this.currentGS = null;
+        }
+
         return true;
     }
 
@@ -171,13 +199,6 @@ public class MainActivity extends ApiActivity
                                                 transaction.addToBackStack(null);
                                                 transaction.commit();
 
-                                                JSONObject req = new JSONObject();
-                                                try {
-                                                    req.put("gsID", gsID);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                new ApiClient(activity, "/server/getSingle", activity.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverStatus").execute();
                                                 return true;
                                             }
                                         });
