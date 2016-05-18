@@ -104,6 +104,8 @@ public class MainActivity extends ApiActivity
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
+            editor.commit();
+
             Intent mStartActivity = new Intent(this, LoginActivity.class);
             PendingIntent mPendingIntent = PendingIntent.getActivity(this, 123456, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
@@ -114,7 +116,7 @@ public class MainActivity extends ApiActivity
         if (item.getTitle().equals("Fehler melden")) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
-            intent.putExtra(Intent.EXTRA_EMAIL, "android@gameserver-sponsor.de");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"android@gameserver-sponsor.de"});
             intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in App");
             intent.putExtra(Intent.EXTRA_TEXT, "Message");
 
