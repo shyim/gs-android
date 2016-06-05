@@ -3,9 +3,11 @@ package de.shyim.gameserver_sponsor.ui.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -40,6 +42,20 @@ public class BlogList extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(R.id.blog_list);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                BlogItem blogItem = (BlogItem) listView.getItemAtPosition(position);
+
+                BlogDetail blogDetail = new BlogDetail();
+                blogDetail.setBlogId(blogItem.getId());
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.contentMain, blogDetail);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         new ApiClientFragment(this, "/blog", new JSONObject(), "blog").execute();
     }

@@ -65,6 +65,10 @@ public class ConsoleFragment extends BaseFragment {
 
     @Override
     public void onApiResponse(JSONObject object, String action) {
+        if (getActivity() == null) {
+            return;
+        }
+
         String log = null;
         try {
             log = object.getString("log");

@@ -40,7 +40,6 @@ public class BlogImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
             if (imageView != null) {
                 if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
-                } else {
                 }
             }
         }
