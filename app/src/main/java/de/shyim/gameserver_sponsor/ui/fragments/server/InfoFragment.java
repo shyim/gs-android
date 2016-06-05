@@ -23,6 +23,7 @@ import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
 public class InfoFragment extends BaseFragment {
     private Integer gsID;
     private TextView serverStatus = null;
+    private Integer canceled = 0;
 
     public void setGsID (Integer gsID) {
         this.gsID = gsID;
@@ -32,6 +33,9 @@ public class InfoFragment extends BaseFragment {
         Runnable serverStatusRunnable = new Runnable() {
             @Override
             public void run() {
+                if (canceled == 1) {
+                    return;
+                }
                 JSONObject req = new JSONObject();
                 try {
                     req.put("gsID", myServerFragment.gsID);
@@ -140,6 +144,12 @@ public class InfoFragment extends BaseFragment {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        canceled = 1;
     }
 
     public interface OnFragmentInteractionListener {

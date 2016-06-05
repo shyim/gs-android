@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import de.shyim.gameserver_sponsor.ui.fragments.server.InfoFragment;
 public class ServerFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ViewPagerAdapter adapter;
     private Integer gsID;
 
     private OnFragmentInteractionListener mListener;
@@ -65,7 +67,7 @@ public class ServerFragment extends Fragment {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
 
         InfoFragment infoFragment = new InfoFragment();
         infoFragment.setGsID(gsID);
@@ -101,6 +103,11 @@ public class ServerFragment extends Fragment {
             mFragmentTitleList.add(title);
         }
 
+        public List<Fragment> getFragments()
+        {
+            return mFragmentList;
+        }
+
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
@@ -122,6 +129,19 @@ public class ServerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        List<Fragment> fragmentList = adapter.getFragments();
+
+        for (int i = 0; i < fragmentList.size(); i++) {
+            fragmentTransaction.remove(fragmentList.get(i));
+        }
+        fragmentTransaction.commit();
     }
 
     /**
