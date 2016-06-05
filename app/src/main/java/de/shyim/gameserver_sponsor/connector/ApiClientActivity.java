@@ -19,6 +19,7 @@ import de.shyim.gameserver_sponsor.ui.activity.BaseActivity;
 public class ApiClientActivity extends AsyncTask<Void, Void, Boolean> {
     private String sURI = "/";
     public static String sToken = "";
+    public static String langCode = "";
     private String sAction;
     private BaseActivity activityApiActivity;
     private JSONObject jsonRequest;
@@ -42,6 +43,7 @@ public class ApiClientActivity extends AsyncTask<Void, Void, Boolean> {
             String reqParams = jsonRequest.toString();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("X-GS3", sToken);
+            connection.setRequestProperty("ACCEPT_LANGUAGE", langCode);
             connection.setDoOutput(true);
 
             DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
@@ -32,15 +33,17 @@ import java.util.ArrayList;
 
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
+import de.shyim.gameserver_sponsor.ui.fragments.BlogList;
 import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener, BlogList.OnFragmentInteractionListener {
 
     private ImageView mImageView;
     private Menu mMenu;
     private NavigationView navigationView;
+    private TabLayout tabLayout;
     private Integer currentGS = null;
 
     @Override
@@ -49,6 +52,8 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs_layout);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,7 +75,15 @@ public class MainActivity extends BaseActivity
         mUsername.setText(sharedPreferences.getString("username", ""));
         mEmail.setText(sharedPreferences.getString("email", ""));
 
-        setTitle("Dashboard");
+        setTitle("Blog");
+
+        BlogList newFragment = new BlogList();
+        Bundle args = new Bundle();
+        newFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contentMain, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -95,6 +108,17 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        if (item.getTitle().equals("Blog")) {
+            BlogList newFragment = new BlogList();
+            Bundle args = new Bundle();
+            newFragment.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.contentMain, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
         if (item.getTitle().equals("Ausloggen")) {
             /**
              * Restart App
@@ -136,6 +160,7 @@ public class MainActivity extends BaseActivity
 
         if (!item.getTitle().toString().contains(":")) {
             this.currentGS = null;
+            tabLayout.setVisibility(View.GONE);
         }
 
         setTitle(item.getTitle());

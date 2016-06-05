@@ -19,6 +19,7 @@ import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
 public class ApiClientFragment extends AsyncTask<Void, Void, Boolean> {
     private String sURI = "/";
     public static String sToken = "";
+    public static String langCode = "";
     private String sAction;
     private BaseFragment apiBaseFragment;
     private JSONObject jsonRequest;
@@ -39,9 +40,12 @@ public class ApiClientFragment extends AsyncTask<Void, Void, Boolean> {
             URL url = new URL(sHost + sURI);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
+            jsonRequest.put("language", langCode);
+
             String reqParams = jsonRequest.toString();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("X-GS3", sToken);
+            connection.setRequestProperty("ACCEPT_LANGUAGE", langCode);
             connection.setDoOutput(true);
 
             DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -57,6 +61,8 @@ public class ApiClientFragment extends AsyncTask<Void, Void, Boolean> {
             }
             bufferedReader.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

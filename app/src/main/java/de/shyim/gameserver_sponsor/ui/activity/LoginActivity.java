@@ -21,6 +21,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
@@ -71,7 +73,9 @@ public class LoginActivity extends BaseActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
         if (!sharedPreferences.getString("token", "").equals("")) {
             ApiClientActivity.sToken = sharedPreferences.getString("token", "");
+            ApiClientActivity.langCode = Locale.getDefault().getLanguage();
             ApiClientFragment.sToken = sharedPreferences.getString("token", "");
+            ApiClientFragment.langCode = Locale.getDefault().getLanguage();
 
             Intent myIntent = new Intent(this, MainActivity.class);
             startActivity(myIntent);
@@ -134,8 +138,9 @@ public class LoginActivity extends BaseActivity {
                 final String toastMessage = object.getString("message");
 
                 ApiClientActivity.sToken = object.getString("token");
+                ApiClientActivity.langCode = Locale.getDefault().getLanguage();
                 ApiClientFragment.sToken = object.getString("token");
-
+                ApiClientFragment.langCode = Locale.getDefault().getLanguage();
 
                 runOnUiThread(new Runnable() {
                     public void run()
