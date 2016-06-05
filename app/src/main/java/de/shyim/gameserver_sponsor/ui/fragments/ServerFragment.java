@@ -1,4 +1,4 @@
-package de.shyim.gameserver_sponsor.fragments;
+package de.shyim.gameserver_sponsor.ui.fragments;
 
 import android.content.Context;
 import android.net.Uri;

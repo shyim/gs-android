@@ -1,4 +1,4 @@
-package de.shyim.gameserver_sponsor;
+package de.shyim.gameserver_sponsor.ui.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -33,10 +33,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import de.shyim.gameserver_sponsor.fragments.ServerFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
+import de.shyim.gameserver_sponsor.R;
+import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
-public class MainActivity extends ApiActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener {
 
     private ImageView mImageView;
@@ -224,7 +226,6 @@ public class MainActivity extends ApiActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                System.out.println(object.toString());
                 break;
             case "avatar":
                 String avatarUrl;
@@ -274,7 +275,6 @@ public class MainActivity extends ApiActivity
                                 }
                             }
                         });
-                        TextView txt = (TextView) findViewById(R.id.serverOnlineStatus);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

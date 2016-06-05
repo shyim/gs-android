@@ -1,4 +1,4 @@
-package de.shyim.gameserver_sponsor;
+package de.shyim.gameserver_sponsor.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,10 +21,13 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.shyim.gameserver_sponsor.connector.ApiClient;
+import de.shyim.gameserver_sponsor.R;
+
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends ApiActivity {
+public class LoginActivity extends BaseActivity {
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -66,7 +68,7 @@ public class LoginActivity extends ApiActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-        if(sharedPreferences.getString("token", "") != "") {
+        if (!sharedPreferences.getString("token", "").equals("")) {
             Intent myIntent = new Intent(this, MainActivity.class);
             startActivity(myIntent);
         }
@@ -161,7 +163,7 @@ public class LoginActivity extends ApiActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public void showProgress(final boolean show) {
+    private void showProgress(final boolean show) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 

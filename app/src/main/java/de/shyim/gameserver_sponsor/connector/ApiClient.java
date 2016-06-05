@@ -1,4 +1,4 @@
-package de.shyim.gameserver_sponsor;
+package de.shyim.gameserver_sponsor.connector;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,20 +10,20 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import de.shyim.gameserver_sponsor.ui.activity.BaseActivity;
+
 public class ApiClient extends AsyncTask<Void, Void, Boolean> {
-    private String sHost = "https://gameserver-sponsor.de/api";
     private String sURI = "/";
     private String sToken;
     private String sAction;
-    private ApiActivity activityApiActivity;
+    private BaseActivity activityApiActivity;
     private JSONObject jsonRequest;
 
-    ApiClient(ApiActivity activity, String uri, String token, JSONObject request, String action) {
+    public ApiClient(BaseActivity activity, String uri, String token, JSONObject request, String action) {
         sURI = uri;
         sToken = token;
         sAction = action;
@@ -36,6 +36,7 @@ public class ApiClient extends AsyncTask<Void, Void, Boolean> {
         StringBuilder responseOutput = new StringBuilder();
 
         try {
+            String sHost = "https://gameserver-sponsor.de/api";
             URL url = new URL(sHost + sURI);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 

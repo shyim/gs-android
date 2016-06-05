@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:id="@+id/contentMain"
-    tools:context="de.shyim.gameserver_sponsor.MainActivity"
+    tools:context="de.shyim.gameserver_sponsor.ui.activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
 </RelativeLayout>
