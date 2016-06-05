@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
@@ -99,7 +95,6 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        setTitle(item.getTitle());
         if (item.getTitle().equals("Ausloggen")) {
             /**
              * Restart App
@@ -117,6 +112,16 @@ public class MainActivity extends BaseActivity
             System.exit(0);
         }
 
+        if (item.getTitle().equals("Teile uns")) {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.ShareText));
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.ChooseIntent)));
+
+            return true;
+        }
+
         if (item.getTitle().equals("Fehler melden")) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
@@ -124,12 +129,16 @@ public class MainActivity extends BaseActivity
             intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in App");
             intent.putExtra(Intent.EXTRA_TEXT, "Message");
 
-            startActivity(Intent.createChooser(intent, "Send Message"));
+            startActivity(Intent.createChooser(intent, getString(R.string.ChooseIntent)));
+
+            return true;
         }
 
         if (!item.getTitle().toString().contains(":")) {
             this.currentGS = null;
         }
+
+        setTitle(item.getTitle());
 
         return true;
     }
