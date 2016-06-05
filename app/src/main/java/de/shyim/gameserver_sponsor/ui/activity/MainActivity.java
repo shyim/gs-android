@@ -45,6 +45,8 @@ public class MainActivity extends BaseActivity
     private NavigationView navigationView;
     private TabLayout tabLayout;
     private Integer currentGS = null;
+    private DrawerLayout drawer = null;
+    private MenuItem prevMenuItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class MainActivity extends BaseActivity
 
         tabLayout = (TabLayout) findViewById(R.id.tabs_layout);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -82,8 +84,8 @@ public class MainActivity extends BaseActivity
         newFragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contentMain, newFragment);
-        transaction.addToBackStack(null);
         transaction.commit();
+        setMenuItem(mMenu.getItem(0));
     }
 
     @Override
@@ -95,7 +97,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -106,7 +107,6 @@ public class MainActivity extends BaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         if (item.getTitle().equals("Blog")) {
@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity
             transaction.replace(R.id.contentMain, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            setMenuItem(item);
         }
 
         if (item.getTitle().equals("Ausloggen")) {
@@ -197,8 +198,7 @@ public class MainActivity extends BaseActivity
 
                                             @Override
                                             public boolean onMenuItemClick(MenuItem item) {
-                                                item.setChecked(true);
-                                                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                                setMenuItem(item);
                                                 drawer.closeDrawer(GravityCompat.START);
                                                 setTitle(item.getTitle());
                                                 /**
@@ -211,7 +211,6 @@ public class MainActivity extends BaseActivity
                                                 newFragment.setArguments(args);
                                                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                                                 transaction.replace(R.id.contentMain, newFragment);
-                                                transaction.addToBackStack(null);
                                                 transaction.commit();
 
                                                 return true;
@@ -273,4 +272,13 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {}
+
+    private void setMenuItem(MenuItem item)
+    {
+        if (prevMenuItem != null) {
+            prevMenuItem.setChecked(false);
+        }
+        item.setChecked(true);
+        prevMenuItem = item;
+    }
 }

@@ -5,10 +5,11 @@
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
+            android:checked="true"
             android:title="Blog" />
     </group>
 
-    <item android:title="Meine Server" android:checkableBehavior="single">
+    <item android:title="Meine Server">
         <menu></menu>
     </item>
 
