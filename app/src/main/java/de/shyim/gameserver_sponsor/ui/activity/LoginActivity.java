@@ -21,8 +21,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.shyim.gameserver_sponsor.connector.ApiClient;
+import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
+import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
 
 /**
  * A login screen that offers login via email/password.
@@ -69,6 +70,9 @@ public class LoginActivity extends BaseActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
         if (!sharedPreferences.getString("token", "").equals("")) {
+            ApiClientActivity.sToken = sharedPreferences.getString("token", "");
+            ApiClientFragment.sToken = sharedPreferences.getString("token", "");
+
             Intent myIntent = new Intent(this, MainActivity.class);
             startActivity(myIntent);
         }
@@ -111,7 +115,7 @@ public class LoginActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ApiClient client = new ApiClient(this, "/", "", login, "login");
+            ApiClientActivity client = new ApiClientActivity(this, "/", login, "login");
             client.execute();
         }
     }
@@ -128,6 +132,10 @@ public class LoginActivity extends BaseActivity {
                 editor.putString("email", object.getString("email"));
                 editor.apply();
                 final String toastMessage = object.getString("message");
+
+                ApiClientActivity.sToken = object.getString("token");
+                ApiClientFragment.sToken = object.getString("token");
+
 
                 runOnUiThread(new Runnable() {
                     public void run()

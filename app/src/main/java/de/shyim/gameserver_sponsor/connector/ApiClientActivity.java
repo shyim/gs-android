@@ -16,16 +16,15 @@ import javax.net.ssl.HttpsURLConnection;
 
 import de.shyim.gameserver_sponsor.ui.activity.BaseActivity;
 
-public class ApiClient extends AsyncTask<Void, Void, Boolean> {
+public class ApiClientActivity extends AsyncTask<Void, Void, Boolean> {
     private String sURI = "/";
-    private String sToken;
+    public static String sToken = "";
     private String sAction;
     private BaseActivity activityApiActivity;
     private JSONObject jsonRequest;
 
-    public ApiClient(BaseActivity activity, String uri, String token, JSONObject request, String action) {
+    public ApiClientActivity(BaseActivity activity, String uri, JSONObject request, String action) {
         sURI = uri;
-        sToken = token;
         sAction = action;
         activityApiActivity = activity;
         jsonRequest = request;

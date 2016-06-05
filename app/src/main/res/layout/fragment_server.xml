@@ -30,39 +30,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Starten"
-                android:id="@+id/button"
+                android:id="@+id/serverStart"
                 android:layout_marginTop="49dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:onClick="onStartServer"
                 android:elevation="0dp" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Stoppen"
-                android:id="@+id/button2"
+                android:id="@+id/serverStop"
                 android:layout_below="@+id/button"
                 android:layout_alignLeft="@+id/button"
                 android:layout_alignStart="@+id/button"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="onStopServer"/>
+                android:layout_alignParentEnd="true" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Neustarten"
-                android:id="@+id/button3"
+                android:id="@+id/serverRestart"
                 android:layout_below="@+id/button2"
                 android:layout_alignLeft="@+id/button2"
                 android:layout_alignStart="@+id/button2"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="onRestartServer"/>
+                android:layout_alignParentEnd="true" />
 
         </LinearLayout>
 

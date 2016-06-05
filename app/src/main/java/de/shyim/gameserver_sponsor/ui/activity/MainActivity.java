@@ -33,8 +33,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import de.shyim.gameserver_sponsor.connector.ApiClient;
+import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
+import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
@@ -70,40 +71,17 @@ public class MainActivity extends BaseActivity
         mImageView = (ImageView) header.findViewById(R.id.navHeaderAvatar);
 
         SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-
         mUsername.setText(sharedPreferences.getString("username", ""));
         mEmail.setText(sharedPreferences.getString("email", ""));
 
         setTitle("Dashboard");
-
-        final MainActivity mainActivity = this;
-
-        final Handler serverStatusHandler = new Handler();
-        Runnable serverStatusRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mainActivity.currentGS != null) {
-                    JSONObject req = new JSONObject();
-                    try {
-                        req.put("gsID", mainActivity.currentGS);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    new ApiClient(mainActivity, "/server/getSingle", mainActivity.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverStatus").execute();
-                }
-
-                serverStatusHandler.postDelayed(this, 2500);
-            }
-        };
-        serverStatusHandler.postDelayed(serverStatusRunnable, 2500);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-        new ApiClient(this, "/index/avatar", sharedPreferences.getString("token", ""), new JSONObject(), "avatar").execute();
-        new ApiClient(this, "/server", sharedPreferences.getString("token", ""), new JSONObject(), "server").execute();
+        new ApiClientActivity(this, "/index/avatar", new JSONObject(), "avatar").execute();
+        new ApiClientActivity(this, "/server", new JSONObject(), "server").execute();
     }
 
     @Override
@@ -255,67 +233,9 @@ public class MainActivity extends BaseActivity
                     new DownloadImagesTask(mImageView, getFilesDir() + "/avatar.png").execute(avatarUrl);
                 }
                 break;
-            case "serverStatus":
-                try {
-                    if (object.getBoolean("success")) {
-                        final Boolean onlineStatus = object.getBoolean("online");
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView txt = (TextView) findViewById(R.id.serverOnlineStatus);
-                                if (onlineStatus) {
-                                    txt.setText("Server ist online");
-                                    txt.setTextColor(Color.parseColor("#27a4b0"));
-                                    txt.setTypeface(null, Typeface.BOLD);
-                                } else {
-                                    txt.setText("Server ist offline");
-                                    txt.setTextColor(Color.parseColor("#BD362F"));
-                                    txt.setTypeface(null, Typeface.BOLD);
-                                }
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(object.toString());
-                break;
         }
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    public void onStartServer(View view) {
-        JSONObject req = new JSONObject();
-        try {
-            req.put("gsID", this.currentGS);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        new ApiClient(this, "/server/start", this.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverStart").execute();
-    }
-
-    public void onStopServer(View view) {
-        JSONObject req = new JSONObject();
-        try {
-            req.put("gsID", this.currentGS);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        new ApiClient(this, "/server/stop", this.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverStop").execute();
-    }
-
-    public void onRestartServer(View view) {
-        JSONObject req = new JSONObject();
-        try {
-            req.put("gsID", this.currentGS);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        new ApiClient(this, "/server/restart", this.getSharedPreferences("gs3", 0).getString("token", ""), req, "serverRestart").execute();
-    }
+    public void onFragmentInteraction(Uri uri) {}
 }
