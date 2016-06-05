@@ -157,12 +157,13 @@ public class MainActivity extends BaseActivity
                                 mMenu.getItem(1).getSubMenu().clear();
                                 for (int i = 0; i < servers.size(); i++) {
                                     try {
-                                        MenuItem item = mMenu.getItem(1).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
+                                        final MenuItem item = mMenu.getItem(1).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
                                         final Integer gsID = Integer.valueOf(servers.get(i).getString("id"));
                                         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
                                             @Override
                                             public boolean onMenuItemClick(MenuItem item) {
+                                                item.setChecked(true);
                                                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                                                 drawer.closeDrawer(GravityCompat.START);
                                                 setTitle(item.getTitle());
