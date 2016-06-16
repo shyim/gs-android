@@ -17,6 +17,8 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import de.shyim.gameserver_sponsor.cache.ImageCache;
+
 public class BlogImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
 
@@ -46,6 +48,10 @@ public class BlogImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     private Bitmap downloadBitmap(String url) {
+        if (ImageCache.exists(url)) {
+            return ImageCache.get(url);
+        }
+
         HttpURLConnection urlConnection = null;
         try {
             URL uri = new URL(url);
@@ -55,6 +61,7 @@ public class BlogImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
             if (inputStream != null) {
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 bitmap = getRoundedCornerBitmap(bitmap, 100);
+                ImageCache.put(url, bitmap);
                 return bitmap;
             }
         } catch (Exception e) {

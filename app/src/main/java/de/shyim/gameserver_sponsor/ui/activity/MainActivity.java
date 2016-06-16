@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import de.shyim.gameserver_sponsor.cache.ImageCache;
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.ui.fragments.BlogList;
@@ -86,6 +87,9 @@ public class MainActivity extends BaseActivity
         transaction.replace(R.id.contentMain, newFragment);
         transaction.commit();
         setMenuItem(mMenu.getItem(0));
+
+        ImageCache.keys = new ArrayList<>();
+        ImageCache.images = new ArrayList<>();
     }
 
     @Override
