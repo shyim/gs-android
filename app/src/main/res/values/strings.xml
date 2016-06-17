@@ -22,4 +22,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="doesntHaveAccount">Noch kein Konto?</string>
+    <string name="blog">Blog</string>
+    <string name="gp_overview">GP Übersicht</string>
+    <string name="logout">Ausloggen</string>
+    <string name="my_servers">Meine Server</string>
+    <string name="communication">Kommunikation</string>
+    <string name="share_us">Teile uns</string>
+    <string name="report_bugs">Fehler melden</string>
 </resources>

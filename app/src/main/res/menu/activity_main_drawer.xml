@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
+            android:id="@+id/nav_blog"
             android:checked="true"
-            android:title="Blog" />
+            android:icon="@drawable/ic_mail"
+            android:title="@string/blog" />
+        <item
+            android:id="@+id/nav_gp"
+            android:icon="@drawable/ic_attach_money"
+            android:title="@string/gp_overview" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit_to_app"
+            android:title="@string/logout" />
     </group>
 
-    <item android:title="Meine Server">
+    <item android:title="@string/my_servers">
         <menu></menu>
     </item>
 
-    <item android:title="Kommunikation">
+    <item android:title="@string/communication">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Teile uns" />
+                android:id="@+id/nav_share_us"
+                android:icon="@drawable/ic_share"
+                android:title="@string/share_us" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Fehler melden" />
+                android:id="@+id/nav_bug_report"
+                android:icon="@drawable/ic_share"
+                android:title="@string/report_bugs" />
         </menu>
     </item>
-
-    <item
-        android:id="@+id/navLogout"
-        android:icon="@drawable/ic_action_exit"
-        android:title="Ausloggen" />
-
 </menu>

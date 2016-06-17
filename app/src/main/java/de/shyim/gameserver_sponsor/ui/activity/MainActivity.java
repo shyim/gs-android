@@ -35,6 +35,7 @@ import de.shyim.gameserver_sponsor.cache.ImageCache;
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.ui.fragments.BlogList;
+import de.shyim.gameserver_sponsor.ui.fragments.GPFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import de.shyim.gameserver_sponsor.task.DownloadImagesTask;
 
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity
     private Integer currentGS = null;
     private DrawerLayout drawer = null;
     private MenuItem prevMenuItem = null;
+    private Integer menuServerId = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,59 +115,60 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         drawer.closeDrawer(GravityCompat.START);
 
-        if (item.getTitle().equals("Blog")) {
-            BlogList newFragment = new BlogList();
-            Bundle args = new Bundle();
-            newFragment.setArguments(args);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.contentMain, newFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-            setMenuItem(item);
-        }
+        switch (item.getItemId()) {
+            case R.id.nav_blog:
+                BlogList newFragment = new BlogList();
+                Bundle args = new Bundle();
+                newFragment.setArguments(args);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.contentMain, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+            case R.id.nav_gp:
+                GPFragment gpFragment = new GPFragment();
+                FragmentTransaction transactionGP = getSupportFragmentManager().beginTransaction();
+                transactionGP.replace(R.id.contentMain, gpFragment);
+                transactionGP.addToBackStack(null);
+                transactionGP.commit();
+                break;
+            case R.id.nav_logout:
+                SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+                editor.commit();
 
-        if (item.getTitle().equals("Ausloggen")) {
-            /**
-             * Restart App
-             */
-            SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
-            editor.commit();
+                Intent mStartActivity = new Intent(this, LoginActivity.class);
+                PendingIntent mPendingIntent = PendingIntent.getActivity(this, 123456, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                System.exit(0);
+                break;
+            case R.id.nav_share_us:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.ShareText));
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.ChooseIntent)));
+                return true;
+            case R.id.nav_bug_report:
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/html");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"android@gameserver-sponsor.de"});
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in App");
+                intent.putExtra(Intent.EXTRA_TEXT, "Message");
 
-            Intent mStartActivity = new Intent(this, LoginActivity.class);
-            PendingIntent mPendingIntent = PendingIntent.getActivity(this, 123456, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-            System.exit(0);
-        }
+                startActivity(Intent.createChooser(intent, getString(R.string.ChooseIntent)));
 
-        if (item.getTitle().equals("Teile uns")) {
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.ShareText));
-            startActivity(Intent.createChooser(sharingIntent, getString(R.string.ChooseIntent)));
-
-            return true;
-        }
-
-        if (item.getTitle().equals("Fehler melden")) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/html");
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"android@gameserver-sponsor.de"});
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in App");
-            intent.putExtra(Intent.EXTRA_TEXT, "Message");
-
-            startActivity(Intent.createChooser(intent, getString(R.string.ChooseIntent)));
-
-            return true;
+                return true;
         }
 
         if (!item.getTitle().toString().contains(":")) {
             this.currentGS = null;
             tabLayout.setVisibility(View.GONE);
+        } else {
+            setMenuItem(item);
         }
 
         setTitle(item.getTitle());
@@ -193,10 +196,10 @@ public class MainActivity extends BaseActivity
                                 /**
                                  * Remove all Server Items, before adding new
                                  */
-                                mMenu.getItem(1).getSubMenu().clear();
+                                mMenu.getItem(activity.menuServerId).getSubMenu().clear();
                                 for (int i = 0; i < servers.size(); i++) {
                                     try {
-                                        final MenuItem item = mMenu.getItem(1).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
+                                        final MenuItem item = mMenu.getItem(activity.menuServerId).getSubMenu().add(servers.get(i).getString("IP") + ":" + servers.get(i).getString("Port"));
                                         final Integer gsID = Integer.valueOf(servers.get(i).getString("id"));
                                         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
