@@ -3,18 +3,53 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 
     defaultConfig {
         applicationId "de.shyim.gameserver_sponsor"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 6
+        versionCode 7
         versionName "0.1.0"
+
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../app.keystore.jks")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig = signingConfigs.release
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+        }
+    }
+}
+
+android.applicationVariants.all { variant ->
+    variant.assemble.doLast {
+        variant.outputs.each { output ->
+            println "aligned " + output.outputFile
+            println "unaligned " + output.packageApplication.outputFile
+
+            File unaligned = output.packageApplication.outputFile;
+            File aligned = output.outputFile
+            if (!unaligned.getName().equalsIgnoreCase(aligned.getName())) {
+                println "deleting " + unaligned.getName()
+                unaligned.delete()
+            }
         }
     }
 }
