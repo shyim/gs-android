@@ -2,6 +2,7 @@ package de.shyim.gameserver_sponsor.ui.fragments.gp;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
 public class GPList extends BaseFragment {
     private ListView listView;
     private String mode = "";
-    private Boolean listLoaded = false;
+    private SwipeRefreshLayout swipeContainer = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +42,23 @@ public class GPList extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(R.id.gp_list);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.gp_list_swipe_container);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadItems();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        loadItems();
+    }
+
+    private void loadItems() {
         new ApiClientFragment(this, "/gp/index/" + mode, new JSONObject(), "").execute();
     }
 
@@ -65,10 +83,12 @@ public class GPList extends BaseFragment {
         }
 
         final ListView myListView = listView;
+        final SwipeRefreshLayout swipeRefreshLayout = swipeContainer;
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                swipeRefreshLayout.setRefreshing(false);
                 myListView.setAdapter(new GPListAdapter(getContext(), listBlockItems));
             }
         });

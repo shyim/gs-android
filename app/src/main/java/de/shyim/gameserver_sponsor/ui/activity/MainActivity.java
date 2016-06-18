@@ -167,7 +167,6 @@ public class MainActivity extends BaseActivity
         if (!item.getTitle().toString().contains(":")) {
             this.currentGS = null;
             tabLayout.setVisibility(View.GONE);
-        } else {
             setMenuItem(item);
         }
 
