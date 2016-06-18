@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +34,9 @@ public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap result) {
+        if (result == null) {
+            return;
+        }
         result = getRoundedCornerBitmap(result, 100);
         mView.setImageBitmap(result);
 
