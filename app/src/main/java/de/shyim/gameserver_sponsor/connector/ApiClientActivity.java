@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -58,6 +59,8 @@ public class ApiClientActivity extends AsyncTask<Void, Void, Boolean> {
                 responseOutput.append(content);
             }
             bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            responseOutput.append("{\"success\": false}");
         } catch (IOException e) {
             e.printStackTrace();
         }
