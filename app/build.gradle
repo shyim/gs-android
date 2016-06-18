@@ -11,8 +11,8 @@ android {
         applicationId "de.shyim.gameserver_sponsor"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 7
-        versionName "0.1.0"
+        versionCode 8
+        versionName "0.1.1"
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -23,16 +23,11 @@ android {
     }
 
     signingConfigs {
-        release {
-            storeFile file("../app.keystore.jks")
-        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig = signingConfigs.release
-            signingConfig signingConfigs.release
             zipAlignEnabled true
         }
     }
