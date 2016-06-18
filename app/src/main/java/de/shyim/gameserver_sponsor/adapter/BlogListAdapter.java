@@ -43,10 +43,10 @@ public class BlogListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.blog_list_item, null);
             holder = new ViewHolder();
-            holder.headlineView = (TextView) convertView.findViewById(R.id.title);
-            holder.reporterNameView = (TextView) convertView.findViewById(R.id.reporter);
-            holder.reportedDateView = (TextView) convertView.findViewById(R.id.date);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.thumbImage);
+            holder.headlineView = (TextView) convertView.findViewById(R.id.blog_list_title);
+            holder.reporterNameView = (TextView) convertView.findViewById(R.id.blog_list_author);
+            holder.reportedDateView = (TextView) convertView.findViewById(R.id.blog_list_date);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.blog_list_thumb);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

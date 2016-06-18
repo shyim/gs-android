@@ -46,9 +46,9 @@ public class GPFragment extends BaseFragment {
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
 
-        adapter.addFragment(new GPList(), "Alle");
-        adapter.addFragment(new GPList(), "Erhalten");
-        adapter.addFragment(new GPList(), "Ausgegeben");
+        adapter.addFragment(new GPList().setMode(""), "Alle");
+        adapter.addFragment(new GPList().setMode("in"), "Erhalten");
+        adapter.addFragment(new GPList().setMode("out"), "Ausgegeben");
         viewPager.setAdapter(adapter);
     }
 
