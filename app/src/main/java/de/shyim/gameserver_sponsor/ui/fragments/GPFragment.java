@@ -4,6 +4,8 @@ package de.shyim.gameserver_sponsor.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.adapter.ViewPagerAdapter;
@@ -50,6 +54,19 @@ public class GPFragment extends BaseFragment {
         adapter.addFragment(new GPList().setMode("in"), "Erhalten");
         adapter.addFragment(new GPList().setMode("out"), "Ausgegeben");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        List<Fragment> fragmentList = adapter.getFragments();
+
+        for (int i = 0; i < fragmentList.size(); i++) {
+            fragmentTransaction.remove(fragmentList.get(i));
+        }
+        fragmentTransaction.commit();
     }
 
     @Override
