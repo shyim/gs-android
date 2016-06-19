@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="blog">Blog</string>
+    <string name="communication">Communication</string>
+    <string name="logout">Logout</string>
+    <string name="my_servers">My Servers</string>
+    <string name="share_us">Share Us</string>
+    <string name="report_bugs">Report Bugs</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_settings">Settings</string>
+    <string name="ChooseIntent">Choose</string>
+    <string name="gp_overview">GP Overview</string>
+    <string name="error_invalid_password">Our Password is to short</string>
+    <string name="error_invalid_email">Invalid Email</string>
+    <string name="doesntHaveAccount">No account yet?</string>
+    <string name="error_field_required">This Field is required</string>
+    <string name="error_incorrect_password">Email or Password is wrong</string>
+</resources>
