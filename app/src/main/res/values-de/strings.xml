@@ -18,4 +18,5 @@
     <string name="doesntHaveAccount">No account yet?</string>
     <string name="error_field_required">This Field is required</string>
     <string name="error_incorrect_password">Email or Password is wrong</string>
+    <string name="ShareText">Du suchst einen Gameserver Sponsor? Dann bist du bei https://gameserver-sponsor.de richtig!</string>
 </resources>
