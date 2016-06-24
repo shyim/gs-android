@@ -99,6 +99,21 @@ public class MainActivity extends AppCompatActivity
 
         ApiClient.get("server", null, new JsonHttpResponseHandler() {
             @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                doLogout();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                doLogout();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                doLogout();
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 final ArrayList<JSONObject> servers = new ArrayList<JSONObject>();
                 JSONArray server = null;
@@ -206,17 +221,7 @@ public class MainActivity extends AppCompatActivity
                 transactionGP.commit();
                 break;
             case R.id.nav_logout:
-                SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.clear();
-                editor.apply();
-                editor.commit();
-
-                Intent mStartActivity = new Intent(this, LoginActivity.class);
-                PendingIntent mPendingIntent = PendingIntent.getActivity(this, 123456, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                System.exit(0);
+                doLogout();
                 break;
             case R.id.nav_share_us:
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -246,6 +251,21 @@ public class MainActivity extends AppCompatActivity
         setTitle(item.getTitle());
 
         return true;
+    }
+
+    private void doLogout()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        editor.commit();
+
+        Intent mStartActivity = new Intent(this, LoginActivity.class);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, 123456, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 
     @Override

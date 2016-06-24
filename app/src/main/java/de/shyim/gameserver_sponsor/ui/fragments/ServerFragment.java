@@ -20,22 +20,10 @@ import de.shyim.gameserver_sponsor.ui.fragments.server.ConsoleFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.server.InfoFragment;
 
 public class ServerFragment extends Fragment {
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private ViewPagerAdapter adapter;
     private Integer gsID;
 
     private OnFragmentInteractionListener mListener;
-
-    public ServerFragment() {}
-
-    public static ServerFragment newInstance(String param1, String param2) {
-        ServerFragment fragment = new ServerFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +44,10 @@ public class ServerFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager_server);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager_server);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs_layout);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs_layout);
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(viewPager);
     }
