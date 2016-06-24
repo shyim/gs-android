@@ -3,6 +3,7 @@ package de.shyim.gameserver_sponsor.ui.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +11,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.adapter.BlogListAdapter;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 import de.shyim.gameserver_sponsor.struct.BlogItem;
 
-public class BlogList extends BaseFragment {
+public class BlogList extends Fragment {
     private OnFragmentInteractionListener mListener;
-    public ListView listView;
+    private ListView listView;
 
     public static BlogList newInstance(String param1, String param2) {
         BlogList fragment = new BlogList();
@@ -57,34 +61,34 @@ public class BlogList extends BaseFragment {
             }
         });
 
-        new ApiClientFragment(this, "/blog", new JSONObject(), "blog").execute();
-    }
-
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        final ArrayList<BlogItem> listBlockItems = new ArrayList<>();
-        try {
-            JSONArray blogItems = object.getJSONArray("data");
-            for (int i = 0; i < blogItems.length(); i++) {
-                JSONObject rawData = blogItems.getJSONObject(i);
-                BlogItem blogItem = new BlogItem();
-                blogItem.setId(rawData.getInt("id"));
-                blogItem.setDate(rawData.getString("date"));
-                blogItem.setTitle(rawData.getString("title"));
-                blogItem.setImage(rawData.getString("image"));
-                blogItem.setAuthor(rawData.getString("author"));
-                listBlockItems.add(blogItem);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final ListView myListView = listView;
-
-        getActivity().runOnUiThread(new Runnable() {
+        ApiClient.get("blog", null, new JsonHttpResponseHandler() {
             @Override
-            public void run() {
-                myListView.setAdapter(new BlogListAdapter(getContext(), listBlockItems));
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                final ArrayList<BlogItem> listBlockItems = new ArrayList<>();
+                try {
+                    JSONArray blogItems = response.getJSONArray("data");
+                    for (int i = 0; i < blogItems.length(); i++) {
+                        JSONObject rawData = blogItems.getJSONObject(i);
+                        BlogItem blogItem = new BlogItem();
+                        blogItem.setId(rawData.getInt("id"));
+                        blogItem.setDate(rawData.getString("date"));
+                        blogItem.setTitle(rawData.getString("title"));
+                        blogItem.setImage(rawData.getString("image"));
+                        blogItem.setAuthor(rawData.getString("author"));
+                        listBlockItems.add(blogItem);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final ListView myListView = listView;
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        myListView.setAdapter(new BlogListAdapter(getContext(), listBlockItems));
+                    }
+                });
             }
         });
     }

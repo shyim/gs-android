@@ -2,11 +2,14 @@ package de.shyim.gameserver_sponsor.ui.fragments.gp;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,13 +17,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.adapter.GPListAdapter;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 import de.shyim.gameserver_sponsor.struct.GPItem;
-import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
 
-public class GPList extends BaseFragment {
+public class GPList extends Fragment {
     private ListView listView;
     private String mode = "";
     private SwipeRefreshLayout swipeContainer = null;
@@ -59,37 +62,37 @@ public class GPList extends BaseFragment {
     }
 
     private void loadItems() {
-        new ApiClientFragment(this, "/gp/index/" + mode, new JSONObject(), "").execute();
-    }
-
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        final ArrayList<GPItem> listBlockItems = new ArrayList<>();
-        try {
-            JSONArray blogItems = object.getJSONArray("data");
-            for (int i = 0; i < blogItems.length(); i++) {
-                JSONObject rawData = blogItems.getJSONObject(i);
-                GPItem gpItem = new GPItem();
-                gpItem.setId(rawData.getInt("id"));
-                gpItem.setUserID(rawData.getInt("userID"));
-                gpItem.setName(rawData.getString("name"));
-                gpItem.setValue(rawData.getInt("value"));
-                gpItem.setStatus(rawData.getString("status"));
-                gpItem.setTimestamp(rawData.getString("timestamp"));
-                listBlockItems.add(gpItem);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final ListView myListView = listView;
-        final SwipeRefreshLayout swipeRefreshLayout = swipeContainer;
-
-        getActivity().runOnUiThread(new Runnable() {
+        ApiClient.get("gp/index/" + mode, null, new JsonHttpResponseHandler() {
             @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-                myListView.setAdapter(new GPListAdapter(getContext(), listBlockItems));
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                final ArrayList<GPItem> listBlockItems = new ArrayList<>();
+                try {
+                    JSONArray blogItems = response.getJSONArray("data");
+                    for (int i = 0; i < blogItems.length(); i++) {
+                        JSONObject rawData = blogItems.getJSONObject(i);
+                        GPItem gpItem = new GPItem();
+                        gpItem.setId(rawData.getInt("id"));
+                        gpItem.setUserID(rawData.getInt("userID"));
+                        gpItem.setName(rawData.getString("name"));
+                        gpItem.setValue(rawData.getInt("value"));
+                        gpItem.setStatus(rawData.getString("status"));
+                        gpItem.setTimestamp(rawData.getString("timestamp"));
+                        listBlockItems.add(gpItem);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final ListView myListView = listView;
+                final SwipeRefreshLayout swipeRefreshLayout = swipeContainer;
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        myListView.setAdapter(new GPListAdapter(getContext(), listBlockItems));
+                    }
+                });
             }
         });
     }

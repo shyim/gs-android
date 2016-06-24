@@ -3,24 +3,27 @@ package de.shyim.gameserver_sponsor.ui.fragments.server;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
-import de.shyim.gameserver_sponsor.connector.object.DefaultServerArgument;
-import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 
-public class ConsoleFragment extends BaseFragment {
+public class ConsoleFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Integer gsID;
-    public TextView serverLog;
+    private TextView serverLog;
     private SwipeRefreshLayout swipeContainer = null;
 
     public static ConsoleFragment newInstance(String param1, String param2) {
@@ -39,20 +42,19 @@ public class ConsoleFragment extends BaseFragment {
     public void setGsID (Integer gsID) {
         this.gsID = gsID;
 
-        new ApiClientFragment(this, "/server/log", new DefaultServerArgument(gsID), "log").execute();
+        refreshLogs();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final ConsoleFragment myConsoleFragment = this;
         serverLog = (TextView) view.findViewById(R.id.server_log);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainerServerLog);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new ApiClientFragment(myConsoleFragment, "/server/log", new DefaultServerArgument(myConsoleFragment.gsID), "log").execute();
+                refreshLogs();
             }
         });
         // Configure the refreshing colors
@@ -63,27 +65,31 @@ public class ConsoleFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        if (getActivity() == null) {
-            return;
-        }
+    private void refreshLogs()
+    {
+        RequestParams params = new RequestParams();
+        params.put("gsID", this.gsID);
 
-        String log = null;
-        try {
-            log = object.getString("log");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final String logText = log;
-        final SwipeRefreshLayout swipeRefreshLayout = swipeContainer;
-
-        getActivity().runOnUiThread(new Runnable() {
+        ApiClient.get("server/log", params, new JsonHttpResponseHandler() {
             @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-                serverLog.setText(logText);
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                String log = null;
+                try {
+                    log = response.getString("log");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final String logText = log;
+                final SwipeRefreshLayout swipeRefreshLayout = swipeContainer;
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        serverLog.setText(logText);
+                    }
+                });
             }
         });
     }

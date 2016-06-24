@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,20 +19,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.connector.ApiClient;
-import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -73,11 +76,6 @@ public class LoginActivity extends BaseActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
         if (!sharedPreferences.getString("token", "").equals("")) {
-            ApiClientActivity.sToken = sharedPreferences.getString("token", "");
-            ApiClientActivity.langCode = Locale.getDefault().getLanguage();
-            ApiClientFragment.sToken = sharedPreferences.getString("token", "");
-            ApiClientFragment.langCode = Locale.getDefault().getLanguage();
-
             ApiClient.setToken(sharedPreferences.getString("token", ""));
             ApiClient.setLanguage(Locale.getDefault().getLanguage());
 
@@ -116,61 +114,54 @@ public class LoginActivity extends BaseActivity {
             focusView.requestFocus();
         } else {
             showProgress(true);
-            JSONObject login = new JSONObject();
-            try {
-                login.put("email", mEmailView.getText().toString());
-                login.put("password", mPasswordView.getText().toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            ApiClientActivity client = new ApiClientActivity(this, "/", login, "login");
-            client.execute();
-        }
-    }
 
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        final LoginActivity activity = this;
-        try {
-            if(object.getBoolean("success")) {
-                SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("token", object.getString("token"));
-                editor.putString("username", object.getString("username"));
-                editor.putString("email", object.getString("email"));
-                editor.apply();
-                final String toastMessage = object.getString("message");
+            RequestParams params = new RequestParams();
+            params.put("email", mEmailView.getText().toString());
+            params.put("password", mPasswordView.getText().toString());
 
-                ApiClient.setToken(object.getString("token"));
-                ApiClient.setLanguage(Locale.getDefault().getLanguage());
+            final LoginActivity activity = this;
 
-                ApiClientActivity.sToken = object.getString("token");
-                ApiClientActivity.langCode = Locale.getDefault().getLanguage();
-                ApiClientFragment.sToken = object.getString("token");
-                ApiClientFragment.langCode = Locale.getDefault().getLanguage();
+            ApiClient.get("", params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        if(response.getBoolean("success")) {
+                            SharedPreferences sharedPreferences = getSharedPreferences("gs3", 0);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token", response.getString("token"));
+                            editor.putString("username", response.getString("username"));
+                            editor.putString("email", response.getString("email"));
+                            editor.apply();
+                            final String toastMessage = response.getString("message");
 
-                runOnUiThread(new Runnable() {
-                    public void run()
-                    {
-                        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show();
-                        activity.showProgress(false);
-                        Intent myIntent = new Intent(activity, MainActivity.class);
-                        startActivity(myIntent);
+                            ApiClient.setToken(response.getString("token"));
+                            ApiClient.setLanguage(Locale.getDefault().getLanguage());
+
+                            runOnUiThread(new Runnable() {
+                                public void run()
+                                {
+                                    Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show();
+                                    activity.showProgress(false);
+                                    Intent myIntent = new Intent(activity, MainActivity.class);
+                                    startActivity(myIntent);
+                                }
+                            });
+                        } else {
+                            final String toastMessage = getString(R.string.error_incorrect_password);
+
+                            runOnUiThread(new Runnable() {
+                                public void run()
+                                {
+                                    Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show();
+                                    activity.showProgress(false);
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
-            } else {
-                final String toastMessage = getString(R.string.error_incorrect_password);
-
-                runOnUiThread(new Runnable() {
-                    public void run()
-                    {
-                        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show();
-                        activity.showProgress(false);
-                    }
-                });
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+                }
+            });
         }
     }
 

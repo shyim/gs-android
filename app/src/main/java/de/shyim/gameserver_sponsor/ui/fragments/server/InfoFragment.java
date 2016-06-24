@@ -1,11 +1,13 @@
 package de.shyim.gameserver_sponsor.ui.fragments.server;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +15,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
-import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 
-public class InfoFragment extends BaseFragment {
+public class InfoFragment extends Fragment {
     private Integer gsID;
     private TextView serverStatus = null;
     private Integer canceled = 0;
+    private ProgressDialog progressDialog = null;
 
-    public void setGsID (Integer gsID) {
+    public void setGsID (final Integer gsID) {
         this.gsID = gsID;
 
         final InfoFragment myServerFragment = this;
@@ -36,13 +42,41 @@ public class InfoFragment extends BaseFragment {
                 if (canceled == 1) {
                     return;
                 }
-                JSONObject req = new JSONObject();
-                try {
-                    req.put("gsID", myServerFragment.gsID);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new ApiClientFragment(myServerFragment, "/server/getSingle", req, "serverStatus").execute();
+
+                RequestParams params = new RequestParams();
+                params.put("gsID", myServerFragment.gsID);
+
+                ApiClient.get("server/online", params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            if (response.getBoolean("success")) {
+                                final Boolean onlineStatus = response.getBoolean("online");
+
+                                if (getActivity() == null) {
+                                    return;
+                                }
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (onlineStatus) {
+                                            myServerFragment.serverStatus.setText("Server ist online");
+                                            myServerFragment.serverStatus.setTextColor(Color.parseColor("#27a4b0"));
+                                            myServerFragment.serverStatus.setTypeface(null, Typeface.BOLD);
+                                        } else {
+                                            myServerFragment.serverStatus.setText("Server ist offline");
+                                            myServerFragment.serverStatus.setTextColor(Color.parseColor("#BD362F"));
+                                            myServerFragment.serverStatus.setTypeface(null, Typeface.BOLD);
+                                        }
+                                    }
+                                });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
                 serverStatusHandler.postDelayed(this, 2500);
             }
@@ -69,13 +103,9 @@ public class InfoFragment extends BaseFragment {
         startServerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject req = new JSONObject();
-                try {
-                    req.put("gsID", myFragment.gsID);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new ApiClientFragment(myFragment, "/server/start", req, "serverStart").execute();
+                RequestParams params = new RequestParams();
+                params.put("gsID", myFragment.gsID);
+                ApiClient.get("server/start", params, new JsonHttpResponseHandler());
                 Toast.makeText(myView.getContext(), "Server startet in kürze", Toast.LENGTH_LONG).show();
             }
         });
@@ -84,13 +114,9 @@ public class InfoFragment extends BaseFragment {
         stopServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject req = new JSONObject();
-                try {
-                    req.put("gsID", myFragment.gsID);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new ApiClientFragment(myFragment, "/server/stop", req, "serverStart").execute();
+                RequestParams params = new RequestParams();
+                params.put("gsID", myFragment.gsID);
+                ApiClient.get("server/stop", params, new JsonHttpResponseHandler());
                 Toast.makeText(myView.getContext(), "Server stoppt in kürze", Toast.LENGTH_LONG).show();
             }
         });
@@ -99,51 +125,17 @@ public class InfoFragment extends BaseFragment {
         restartServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject req = new JSONObject();
-                try {
-                    req.put("gsID", myFragment.gsID);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new ApiClientFragment(myFragment, "/server/restart", req, "serverStart").execute();
+                RequestParams params = new RequestParams();
+                params.put("gsID", myFragment.gsID);
+                ApiClient.get("server/restart", params, new JsonHttpResponseHandler());
                 Toast.makeText(myView.getContext(), "Server startet in kürze neu", Toast.LENGTH_LONG).show();
             }
         });
-    }
 
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        final InfoFragment myFragment = this;
-        switch (action) {
-            case "serverStatus":
-                try {
-                    if (object.getBoolean("success")) {
-                        final Boolean onlineStatus = object.getBoolean("online");
-
-                        if (getActivity() == null) {
-                            return;
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (onlineStatus) {
-                                    myFragment.serverStatus.setText("Server ist online");
-                                    myFragment.serverStatus.setTextColor(Color.parseColor("#27a4b0"));
-                                    myFragment.serverStatus.setTypeface(null, Typeface.BOLD);
-                                } else {
-                                    myFragment.serverStatus.setText("Server ist offline");
-                                    myFragment.serverStatus.setTextColor(Color.parseColor("#BD362F"));
-                                    myFragment.serverStatus.setTypeface(null, Typeface.BOLD);
-                                }
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
+        /* progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Laden");
+        progressDialog.setMessage("Lade Serverinformationen");
+        progressDialog.show(); */
     }
 
     @Override

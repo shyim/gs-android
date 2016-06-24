@@ -20,4 +20,7 @@
     <string name="communication">Kommunikation</string>
     <string name="share_us">Teile uns</string>
     <string name="report_bugs">Fehler melden</string>
+    <string name="all">Alle</string>
+    <string name="incoming">Einkommen</string>
+    <string name="spent">Ausgegeben</string>
 </resources>

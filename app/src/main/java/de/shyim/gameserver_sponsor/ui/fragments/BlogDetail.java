@@ -3,22 +3,25 @@ package de.shyim.gameserver_sponsor.ui.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 
-public class BlogDetail extends BaseFragment {
+public class BlogDetail extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private Integer blogId;
-    public WebView webView;
+    private WebView webView;
     public static BlogDetail newInstance(String param1, String param2) {
         BlogDetail fragment = new BlogDetail();
         Bundle args = new Bundle();
@@ -37,10 +40,32 @@ public class BlogDetail extends BaseFragment {
         return inflater.inflate(R.layout.fragment_blog_detail, container, false);
     }
 
-    public void setBlogId(Integer blogId) {
-        this.blogId = blogId;
+    void setBlogId(Integer blogId) {
+        ApiClient.get("blog/single/" + blogId.toString(), null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                String title = "";
+                String content = "";
 
-        new ApiClientFragment(this, "/blog/single/" + blogId.toString(), new JSONObject(), "").execute();
+                try {
+                    title = response.getString("title");
+                    content = response.getString("content");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final String finalTitle = title;
+                final String finalContent = content;
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().setTitle(finalTitle);
+                        webView.loadData(finalContent, "text/html; charset=utf-8", "utf-8");
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -52,30 +77,6 @@ public class BlogDetail extends BaseFragment {
         webView.setHorizontalScrollBarEnabled(true);
         WebSettings settings = webView.getSettings();
         settings.setDefaultTextEncodingName("utf-8");
-    }
-
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        String title = "";
-        String content = "";
-
-        try {
-            title = object.getString("title");
-            content = object.getString("content");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final String finalTitle = title;
-        final String finalContent = content;
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().setTitle(finalTitle);
-                webView.loadData(finalContent, "text/html; charset=utf-8", "utf-8");
-            }
-        });
     }
 
     public interface OnFragmentInteractionListener {

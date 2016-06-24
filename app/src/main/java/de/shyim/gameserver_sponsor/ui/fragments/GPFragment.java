@@ -11,26 +11,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.adapter.ViewPagerAdapter;
-import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 import de.shyim.gameserver_sponsor.ui.fragments.gp.GPList;
 
-public class GPFragment extends BaseFragment {
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+public class GPFragment extends Fragment {
     private ViewPagerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        new ApiClientFragment(this, "/gp/count", new JSONObject(), "gp").execute();
+        ApiClient.get("gp/count", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Integer gp = 0;
+
+                try {
+                    gp = response.getInt("gp");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final Integer gp2 = gp;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().setTitle(getActivity().getTitle() + " (" + gp2.toString() + " GP)");
+                    }
+                });
+            }
+        });
 
         return inflater.inflate(R.layout.fragment_gp, container, false);
     }
@@ -39,10 +59,10 @@ public class GPFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager_gp);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager_gp);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs_layout);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs_layout);
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -50,9 +70,9 @@ public class GPFragment extends BaseFragment {
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
 
-        adapter.addFragment(new GPList().setMode(""), "Alle");
-        adapter.addFragment(new GPList().setMode("in"), "Erhalten");
-        adapter.addFragment(new GPList().setMode("out"), "Ausgegeben");
+        adapter.addFragment(new GPList().setMode(""), getString(R.string.all));
+        adapter.addFragment(new GPList().setMode("in"), getString(R.string.incoming));
+        adapter.addFragment(new GPList().setMode("out"), getString(R.string.spent));
         viewPager.setAdapter(adapter);
     }
 
@@ -67,24 +87,5 @@ public class GPFragment extends BaseFragment {
             fragmentTransaction.remove(fragmentList.get(i));
         }
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public void onApiResponse(JSONObject object, String action) {
-        Integer gp = 0;
-
-        try {
-            gp = object.getInt("gp");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final Integer gp2 = gp;
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().setTitle(getActivity().getTitle() + " (" + gp2.toString() + " GP)");
-            }
-        });
     }
 }
