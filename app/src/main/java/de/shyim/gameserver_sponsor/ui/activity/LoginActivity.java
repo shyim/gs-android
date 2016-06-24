@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 import de.shyim.gameserver_sponsor.R;
+import de.shyim.gameserver_sponsor.connector.ApiClient;
 import de.shyim.gameserver_sponsor.connector.ApiClientActivity;
 import de.shyim.gameserver_sponsor.connector.ApiClientFragment;
 
@@ -76,6 +77,9 @@ public class LoginActivity extends BaseActivity {
             ApiClientActivity.langCode = Locale.getDefault().getLanguage();
             ApiClientFragment.sToken = sharedPreferences.getString("token", "");
             ApiClientFragment.langCode = Locale.getDefault().getLanguage();
+
+            ApiClient.setToken(sharedPreferences.getString("token", ""));
+            ApiClient.setLanguage(Locale.getDefault().getLanguage());
 
             Intent myIntent = new Intent(this, MainActivity.class);
             startActivity(myIntent);
@@ -136,6 +140,9 @@ public class LoginActivity extends BaseActivity {
                 editor.putString("email", object.getString("email"));
                 editor.apply();
                 final String toastMessage = object.getString("message");
+
+                ApiClient.setToken(object.getString("token"));
+                ApiClient.setLanguage(Locale.getDefault().getLanguage());
 
                 ApiClientActivity.sToken = object.getString("token");
                 ApiClientActivity.langCode = Locale.getDefault().getLanguage();

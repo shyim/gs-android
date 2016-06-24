@@ -17,6 +17,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 import de.shyim.gameserver_sponsor.ui.fragments.BaseFragment;
 
+/**
+ * @deprecated
+ */
 public class ApiClientFragment extends AsyncTask<Void, Void, Boolean> {
     private String sURI = "/";
     public static String sToken = "";

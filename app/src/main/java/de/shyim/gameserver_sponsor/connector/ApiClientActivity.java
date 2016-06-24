@@ -17,6 +17,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 import de.shyim.gameserver_sponsor.ui.activity.BaseActivity;
 
+/**
+ * @deprecated
+ */
 public class ApiClientActivity extends AsyncTask<Void, Void, Boolean> {
     private String sURI = "/";
     public static String sToken = "";

@@ -8,19 +8,23 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.ArrayList;
 
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.struct.BlogItem;
-import de.shyim.gameserver_sponsor.task.BlogImageDownloaderTask;
 
 public class BlogListAdapter extends BaseAdapter {
     private ArrayList listData;
     private LayoutInflater layoutInflater;
+    private Context context;
 
     public BlogListAdapter(Context context, ArrayList listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class BlogListAdapter extends BaseAdapter {
         holder.reporterNameView.setText(blogItem.getAuthor());
         holder.reportedDateView.setText(blogItem.getDate());
         if (holder.imageView != null) {
-            new BlogImageDownloaderTask(holder.imageView).execute(blogItem.getImage());
+            Glide.with(context).load(blogItem.getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.imageView);
         }
         return convertView;
     }
