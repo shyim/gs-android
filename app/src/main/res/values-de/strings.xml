@@ -23,4 +23,5 @@
     <string name="all">Alle</string>
     <string name="incoming">Einkommen</string>
     <string name="spent">Ausgegeben</string>
+    <string name="no_internet">Es konnte keine Verbindung zur API aufgebaut werden. Bitte prüfe deine Internet Verbindung</string>
 </resources>
