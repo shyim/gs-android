@@ -1,6 +1,5 @@
 package de.shyim.gameserver_sponsor.ui.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,15 +25,7 @@ import de.shyim.gameserver_sponsor.connector.ApiClient;
 import de.shyim.gameserver_sponsor.struct.BlogItem;
 
 public class BlogList extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private ListView listView;
-
-    public static BlogList newInstance(String param1, String param2) {
-        BlogList fragment = new BlogList();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,10 +82,5 @@ public class BlogList extends Fragment {
                 });
             }
         });
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

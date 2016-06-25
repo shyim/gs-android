@@ -1,6 +1,5 @@
 package de.shyim.gameserver_sponsor.ui.fragments.server;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,17 +20,9 @@ import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.connector.ApiClient;
 
 public class ConsoleFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private Integer gsID;
     private TextView serverLog;
     private SwipeRefreshLayout swipeContainer = null;
-
-    public static ConsoleFragment newInstance(String param1, String param2) {
-        ConsoleFragment fragment = new ConsoleFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,10 +83,5 @@ public class ConsoleFragment extends Fragment {
                 });
             }
         });
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

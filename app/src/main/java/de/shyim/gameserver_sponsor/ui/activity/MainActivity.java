@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity
         System.exit(0);
     }
 
-    @Override
     public void onFragmentInteraction(Uri uri) {}
 
     private void setMenuItem(MenuItem item)

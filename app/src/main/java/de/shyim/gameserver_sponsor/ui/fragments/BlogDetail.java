@@ -1,6 +1,5 @@
 package de.shyim.gameserver_sponsor.ui.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,14 +19,7 @@ import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.connector.ApiClient;
 
 public class BlogDetail extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private WebView webView;
-    public static BlogDetail newInstance(String param1, String param2) {
-        BlogDetail fragment = new BlogDetail();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,11 +69,5 @@ public class BlogDetail extends Fragment {
         webView.setHorizontalScrollBarEnabled(true);
         WebSettings settings = webView.getSettings();
         settings.setDefaultTextEncodingName("utf-8");
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-
     }
 }
