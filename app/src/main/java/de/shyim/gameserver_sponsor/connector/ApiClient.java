@@ -9,7 +9,7 @@ import com.loopj.android.http.RequestParams;
 
 public class ApiClient {
     private static final String BASE_URL = "https://gameserver-sponsor.de/api/";
-    private static AsyncHttpClient client = new AsyncHttpClient();
+    private static AsyncHttpClient client = new AsyncHttpClient(true,80,443);
 
     public static void setToken(String token)
     {
