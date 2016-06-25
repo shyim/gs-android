@@ -25,4 +25,5 @@
     <string name="all">All</string>
     <string name="incoming">Incoming</string>
     <string name="spent">Spent</string>
+    <string name="no_internet">Could not connect to the API. Please check our Connection</string>
 </resources>
