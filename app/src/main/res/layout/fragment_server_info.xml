@@ -29,6 +29,18 @@
                 android:gravity="center"
                 android:layout_centerHorizontal="true" />
 
+            <TextView
+                android:text="Game:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/serverGameTitle" />
+
+            <TextView
+                android:text="Slots:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/serverSlots" />
+
         </LinearLayout>
 
     </RelativeLayout>

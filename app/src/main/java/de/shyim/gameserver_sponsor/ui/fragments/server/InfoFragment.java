@@ -93,11 +93,28 @@ public class InfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         serverStatus = (TextView) view.findViewById(R.id.serverOnlineStatus);
+        final TextView gameTitle = (TextView) view.findViewById(R.id.serverGameTitle);
+        final TextView gameSlots = (TextView) view.findViewById(R.id.serverSlots);
 
-        /* progressDialog = new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Laden");
         progressDialog.setMessage("Lade Serverinformationen");
-        progressDialog.show(); */
+        progressDialog.show();
+
+        RequestParams params = new RequestParams();
+        params.put("gsID", gsID);
+        ApiClient.get("server/getSingle", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                progressDialog.hide();
+                try {
+                    gameTitle.setText(gameTitle.getText() + " " + response.getString("name"));
+                    gameSlots.setText(gameSlots.getText() + " " + response.getString("slots"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
