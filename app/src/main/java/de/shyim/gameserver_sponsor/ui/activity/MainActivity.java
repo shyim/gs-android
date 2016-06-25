@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -40,7 +39,7 @@ import de.shyim.gameserver_sponsor.ui.fragments.ServerFragment;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ServerFragment.OnFragmentInteractionListener, BlogList.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private ImageView mImageView;
     private Menu mMenu;
@@ -267,8 +266,6 @@ public class MainActivity extends AppCompatActivity
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0);
     }
-
-    public void onFragmentInteraction(Uri uri) {}
 
     private void setMenuItem(MenuItem item)
     {

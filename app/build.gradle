@@ -15,8 +15,8 @@ android {
         applicationId "de.shyim.gameserver_sponsor"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 9
-        versionName "0.1.2"
+        versionCode 10
+        versionName "0.1.3"
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

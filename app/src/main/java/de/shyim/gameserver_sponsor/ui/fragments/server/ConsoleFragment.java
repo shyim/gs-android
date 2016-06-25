@@ -32,8 +32,6 @@ public class ConsoleFragment extends Fragment {
 
     public void setGsID (Integer gsID) {
         this.gsID = gsID;
-
-        refreshLogs();
     }
 
     @Override
@@ -54,6 +52,7 @@ public class ConsoleFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        refreshLogs();
     }
 
     private void refreshLogs()

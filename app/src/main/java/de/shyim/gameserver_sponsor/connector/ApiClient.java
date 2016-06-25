@@ -1,7 +1,5 @@
 package de.shyim.gameserver_sponsor.connector;
 
-import android.util.Log;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
@@ -14,7 +12,6 @@ public class ApiClient {
     public static void setToken(String token)
     {
         client.addHeader("X-GS3", token);
-        Log.d("ApiClient", "Adding Token " + token);
     }
 
     public static void setLanguage(String language)

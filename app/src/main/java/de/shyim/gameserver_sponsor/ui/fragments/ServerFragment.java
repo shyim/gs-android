@@ -1,7 +1,5 @@
 package de.shyim.gameserver_sponsor.ui.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -16,6 +14,7 @@ import java.util.List;
 
 import de.shyim.gameserver_sponsor.R;
 import de.shyim.gameserver_sponsor.adapter.ViewPagerAdapter;
+import de.shyim.gameserver_sponsor.ui.fragments.server.ActionFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.server.ConsoleFragment;
 import de.shyim.gameserver_sponsor.ui.fragments.server.InfoFragment;
 
@@ -23,7 +22,6 @@ public class ServerFragment extends Fragment {
     private ViewPagerAdapter adapter;
     private Integer gsID;
 
-    private OnFragmentInteractionListener mListener;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,29 +56,16 @@ public class ServerFragment extends Fragment {
         InfoFragment infoFragment = new InfoFragment();
         infoFragment.setGsID(gsID);
 
+        ActionFragment actionFragment = new ActionFragment();
+        actionFragment.setGsID(gsID);
+
         ConsoleFragment consoleFragment = new ConsoleFragment();
         consoleFragment.setGsID(gsID);
 
-        adapter.addFragment(infoFragment, "Aktionen");
+        adapter.addFragment(infoFragment, "Info");
+        adapter.addFragment(actionFragment, "Aktionen");
         adapter.addFragment(consoleFragment, "Konsole");
         viewPager.setAdapter(adapter);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -94,9 +79,5 @@ public class ServerFragment extends Fragment {
             fragmentTransaction.remove(fragmentList.get(i));
         }
         fragmentTransaction.commit();
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

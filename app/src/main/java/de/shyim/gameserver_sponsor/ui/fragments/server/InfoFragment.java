@@ -11,9 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -94,43 +92,7 @@ public class InfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final InfoFragment myFragment = this;
-        final View myView = view;
-
         serverStatus = (TextView) view.findViewById(R.id.serverOnlineStatus);
-
-        Button startServerBtn = (Button) view.findViewById(R.id.serverStart);
-        startServerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RequestParams params = new RequestParams();
-                params.put("gsID", myFragment.gsID);
-                ApiClient.get("server/start", params, new JsonHttpResponseHandler());
-                Toast.makeText(myView.getContext(), "Server startet in kürze", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Button stopServerButton = (Button) view.findViewById(R.id.serverStop);
-        stopServerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RequestParams params = new RequestParams();
-                params.put("gsID", myFragment.gsID);
-                ApiClient.get("server/stop", params, new JsonHttpResponseHandler());
-                Toast.makeText(myView.getContext(), "Server stoppt in kürze", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Button restartServerButton = (Button) view.findViewById(R.id.serverRestart);
-        restartServerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RequestParams params = new RequestParams();
-                params.put("gsID", myFragment.gsID);
-                ApiClient.get("server/restart", params, new JsonHttpResponseHandler());
-                Toast.makeText(myView.getContext(), "Server startet in kürze neu", Toast.LENGTH_LONG).show();
-            }
-        });
 
         /* progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Laden");
