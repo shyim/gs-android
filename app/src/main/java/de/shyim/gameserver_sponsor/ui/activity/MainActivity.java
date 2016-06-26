@@ -267,6 +267,9 @@ public class MainActivity extends AppCompatActivity
         System.exit(0);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {}
+
     private void setMenuItem(MenuItem item)
     {
         if (prevMenuItem != null) {
