@@ -24,4 +24,7 @@
     <string name="incoming">Einkommen</string>
     <string name="spent">Ausgegeben</string>
     <string name="no_internet">Es konnte keine Verbindung zur API aufgebaut werden. Bitte prüfe deine Internet Verbindung</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="sure_logout">Möchtest du dich wirklich ausloggen?</string>
 </resources>

@@ -26,4 +26,7 @@
     <string name="incoming">Incoming</string>
     <string name="spent">Spent</string>
     <string name="no_internet">Could not connect to the API. Please check our Connection</string>
+    <string name="sure_logout">Are you sure to logout?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

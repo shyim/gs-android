@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +21,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -220,8 +223,19 @@ public class MainActivity extends AppCompatActivity
                 transactionGP.commit();
                 break;
             case R.id.nav_logout:
-                doLogout();
-                break;
+                new MaterialDialog.Builder(this)
+                        .title(R.string.logout)
+                        .content(R.string.sure_logout)
+                        .positiveText(R.string.yes)
+                        .negativeText(R.string.no)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                doLogout();
+                            }
+                        })
+                        .show();
+                return true;
             case R.id.nav_share_us:
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
